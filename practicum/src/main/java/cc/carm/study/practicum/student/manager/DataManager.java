@@ -24,8 +24,12 @@ public class DataManager {
 
     public boolean initialize() {
         try {
+            File folder = new File(".tmp");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
             BeeDataSourceConfig config = new BeeDataSourceConfig();
-            File file = new File("data").getCanonicalFile();
+            File file = new File(folder, "data").getCanonicalFile();
             config.setDriverClassName("org.h2.Driver");
             config.setJdbcUrl("jdbc:h2:" + file.getAbsolutePath() + ";DB_CLOSE_DELAY=-1;MODE=MYSQL;DB_CLOSE_ON_EXIT=FALSE");
             this.sqlManager = EasySQL.createManager(config);

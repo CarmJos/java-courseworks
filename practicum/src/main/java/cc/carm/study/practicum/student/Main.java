@@ -208,9 +208,9 @@ public class Main {
         switch (input.toLowerCase()) {
 
             case "1" -> {
-                System.out.println("学号\t姓名\t年龄\t地址");
+                System.out.println("学号 \t姓名 \t年龄 \t地址 \t");
                 for (Student student : studentManager.list()) {
-                    System.out.printf("%s\t%s\t%d\t%s%n",
+                    System.out.printf("%s \t%s \t%d \t%s \t%n",
                             student.id(),
                             student.name(),
                             student.age(),
