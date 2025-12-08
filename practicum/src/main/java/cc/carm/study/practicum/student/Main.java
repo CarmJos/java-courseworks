@@ -2,12 +2,14 @@ package cc.carm.study.practicum.student;
 
 import cc.carm.study.practicum.student.data.Student;
 import cc.carm.study.practicum.student.data.User;
+import cc.carm.study.practicum.student.manager.DataManager;
 import cc.carm.study.practicum.student.manager.StudentManager;
 import cc.carm.study.practicum.student.manager.UserManager;
 import cc.carm.study.practicum.student.utils.BCrypt;
 import cc.carm.study.practicum.student.utils.Validators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
 import java.util.UUID;
@@ -15,6 +17,7 @@ import java.util.function.Function;
 
 public class Main {
 
+    static DataManager dataManager;
     static StudentManager studentManager;
     static UserManager userManager;
 
@@ -24,6 +27,15 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("学生信息管理系统启动中...");
+
+
+        System.out.println("正在链接数据库...");
+        dataManager = new DataManager(LoggerFactory.getLogger("DB"));
+        if (!dataManager.initialize()) {
+            System.out.println("数据库链接失败，系统无法启动。");
+            return;
+        }
+
         studentManager = new StudentManager();
         userManager = new UserManager();
 
@@ -50,12 +62,14 @@ public class Main {
 
         }
 
+        dataManager.shutdown();
+        System.out.println("系统已关闭，感谢使用！");
+
     }
 
     public static void handleDefault(String input) {
         if (input.equals("0")) {
             running = false;
-            System.out.println("系统已退出，感谢使用！");
             return;
         }
         switch (input.toLowerCase()) {
@@ -281,8 +295,8 @@ public class Main {
                     return inputId;
                 });
 
-                Student removed = studentManager.remove(studentId);
-                if (removed != null) {
+                boolean removed = studentManager.remove(studentId);
+                if (removed) {
                     System.out.println("学号为 " + studentId + " 的学生已被删除。");
                 } else {
                     System.out.println("未找到学号为 " + studentId + " 的学生，删除失败。");
