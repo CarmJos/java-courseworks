@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class Main {
@@ -106,7 +107,22 @@ public class Main {
             }
         });
 
-        if (validating == 1) {
+        String verifyCode = UUID.randomUUID().toString().substring(0, 6);
+        System.out.println("验证码: " + verifyCode);
+        boolean success = reading("请输入验证码: ", input -> {
+            if (input.isEmpty()) {
+                System.out.println("验证码不能为空，请重新输入。");
+                return null;
+            }
+            if (input.equalsIgnoreCase(verifyCode)) {
+                return true;
+            } else {
+                System.out.println("验证码错误，登录失败。");
+                return false;
+            }
+        });
+
+        if (success && validating == 1) {
             loggedUser = user;
             System.out.println("登录成功，欢迎 " + user.username() + "！");
         } else {
