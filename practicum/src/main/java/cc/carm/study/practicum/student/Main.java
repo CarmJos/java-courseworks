@@ -48,7 +48,7 @@ public class Main {
             if (loggedUser == null) {
                 System.out.println("请注册或登录以继续：（0=退出, 1=登陆, 2=注册）。");
             } else {
-                System.out.println("请输入命令：（0=登出, 1=列出学生, 2=查询学生, 3=添加学生, 4=删除学生）。");
+                System.out.println("请输入命令：（0=登出, 1=列出学生, 2=查询学生, 3=添加学生, 4=删除学生, 5=修改学生）。");
             }
             System.out.print("> ");
 
@@ -301,6 +301,56 @@ public class Main {
                 } else {
                     System.out.println("未找到学号为 " + studentId + " 的学生，删除失败。");
                 }
+            }
+            case "5" -> {
+                String studentId = reading("请输入要修改的学生学号: ", inputId -> {
+                    if (inputId.isEmpty()) {
+                        System.out.println("学号不能为空，请重新输入。");
+                        return null;
+                    }
+                    return inputId;
+                });
+
+                Student student = studentManager.find(studentId);
+                if (student == null) {
+                    System.out.println("未找到学号为 " + studentId + " 的学生，修改失败。");
+                    return;
+                }
+
+                String name = reading("姓名 (" + student.name() + "): ", inputName -> {
+                    if (inputName.isEmpty()) {
+                        return student.name();
+                    }
+                    return inputName;
+                });
+
+                int age = reading("年龄 (" + student.age() + "): ", inputAge -> {
+                    if (inputAge.isEmpty()) {
+                        return student.age();
+                    }
+                    try {
+                        int a = Integer.parseInt(inputAge);
+                        if (a <= 0) {
+                            System.out.println("年龄必须为正整数，请重新输入。");
+                            return null;
+                        }
+                        return a;
+                    } catch (NumberFormatException e) {
+                        System.out.println("年龄格式不正确，请输入一个整数。");
+                        return null;
+                    }
+                });
+
+                String address = reading("地址 (" + student.address() + "): ", inputAddress -> {
+                    if (inputAddress.isEmpty()) {
+                        return student.address();
+                    }
+                    return inputAddress;
+                });
+
+                Student updatedStudent = new Student(student.id(), name, age, address);
+                studentManager.add(updatedStudent);
+                System.out.println("学生信息修改成功！");
             }
 
         }
