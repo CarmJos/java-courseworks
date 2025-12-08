@@ -7,6 +7,11 @@
     <groupId>cc.carm.study</groupId>
     <artifactId>java-courseworks</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>courses</module>
+        <module>practicum</module>
+    </modules>
     <properties>
         <project.jdk.version>21</project.jdk.version>
         <maven.compiler.source>${project.jdk.version}</maven.compiler.source>
