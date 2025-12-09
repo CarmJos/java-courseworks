@@ -24,7 +24,7 @@ public class DataManager {
             File file = new File(folder, "data").getCanonicalFile();
             config.setPrintRuntimeLog(false);
             config.setDriverClassName("org.h2.Driver");
-            config.setJdbcUrl("jdbc:h2:" + file.getAbsolutePath() + ";DB_CLOSE_DELAY=-1;MODE=MYSQL;DB_CLOSE_ON_EXIT=FALSE");
+            config.setJdbcUrl("jdbc:h2:" + file.getAbsolutePath() + ";DB_CLOSE_DELAY=-1;MODE=MYSQL;DB_CLOSE_ON_EXIT=TRUE");
             this.sqlManager = EasySQL.createManager(config);
             this.sqlManager.executeSQL("SET MODE=MYSQL");
         } catch (Exception exception) {
