@@ -1,12 +1,13 @@
 package cc.carm.study.practicum.student.data;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
 public record Student(
-        String id,
-        String name,
-        int age,
-        String address
+        @NotNull String id, @NotNull String name,
+        int age, @Nullable String address
 ) {
 
     @Override

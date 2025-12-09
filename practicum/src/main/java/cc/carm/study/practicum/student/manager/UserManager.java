@@ -13,7 +13,6 @@ import java.util.Set;
 
 public class UserManager {
 
-
     public @NotNull @UnmodifiableView Set<User> list() {
         return DataTables.USERS.createQuery().build().execute(query -> {
             Set<User> list = new HashSet<>();

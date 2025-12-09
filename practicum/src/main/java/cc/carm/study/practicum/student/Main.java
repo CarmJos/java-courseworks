@@ -28,7 +28,6 @@ public class Main {
 
         System.out.println("学生信息管理系统启动中...");
 
-
         System.out.println("正在链接数据库...");
         dataManager = new DataManager(LoggerFactory.getLogger("DB"));
         if (!dataManager.initialize()) {
@@ -358,12 +357,20 @@ public class Main {
 
     }
 
-    static <T> @NotNull T reading(@NotNull String prefix,
+    /**
+     * 快捷读取输入方法
+     *
+     * @param comment 输入提示
+     * @param handler 输入处理器 （返回NULL则等待下次输入）
+     * @param <T>     返回类型
+     * @return 处理结果
+     */
+    static <T> @NotNull T reading(@NotNull String comment,
                                   @NotNull Function<String, T> handler) {
         Scanner scanner = new Scanner(System.in);
         @Nullable T result = null;
         while (result == null) {
-            System.out.print(prefix);
+            System.out.print(comment);
             String input = scanner.nextLine().trim();
             result = handler.apply(input);
         }
