@@ -14,6 +14,11 @@ public class Validators {
             "^(?:\\+86)?1[3-9]\\d{9}$"
     );
 
+    // 用户名规则： 纯英文、数字、下划线，3~16位
+    static final Pattern USERNAME_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9_]{3,16}$"
+    );
+
     /**
      * 快速验证身份证号码是否合法
      *
@@ -38,6 +43,16 @@ public class Validators {
      */
     public static boolean validatePhone(String phone) {
         return phone != null && PHONE_PATTERN.matcher(phone).matches();
+    }
+
+    /**
+     * 快速验证用户名是否合法
+     *
+     * @param username 用户名
+     * @return 是否合法
+     */
+    public static boolean validateUsername(String username) {
+        return username != null && USERNAME_PATTERN.matcher(username).matches();
     }
 
 

@@ -162,6 +162,10 @@ public class Main {
                 System.out.println("用户名不能为空，请重新输入。");
                 return null;
             }
+            if (!Validators.validateUsername(input)) {
+                System.out.println("用户名格式不正确（仅支持3-16位的字母、数字、下划线），请重新输入。");
+                return null;
+            }
             if (userManager.get(input) != null) {
                 System.out.println("用户名已存在，请重新输入。");
                 return null;
