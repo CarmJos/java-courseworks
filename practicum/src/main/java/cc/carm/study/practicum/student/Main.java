@@ -2,14 +2,13 @@ package cc.carm.study.practicum.student;
 
 import cc.carm.study.practicum.student.data.Student;
 import cc.carm.study.practicum.student.data.User;
-import cc.carm.study.practicum.student.manager.DataManager;
+import cc.carm.study.practicum.student.database.DataManager;
 import cc.carm.study.practicum.student.manager.StudentManager;
 import cc.carm.study.practicum.student.manager.UserManager;
 import cc.carm.study.practicum.student.utils.BCrypt;
 import cc.carm.study.practicum.student.utils.Validators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class Main {
         System.out.println("学生信息管理系统启动中...");
 
         System.out.println("正在链接数据库...");
-        dataManager = new DataManager(LoggerFactory.getLogger("DB"));
+        dataManager = new DataManager();
         if (!dataManager.initialize()) {
             System.out.println("数据库链接失败，系统无法启动。");
             return;
@@ -54,7 +53,7 @@ public class Main {
             String command = scanner.nextLine().trim();
 
             if (loggedUser == null) {
-                handleDefault(command);
+                handleEntry(command);
             } else {
                 handleLoggedIn(command);
             }
@@ -66,7 +65,12 @@ public class Main {
 
     }
 
-    public static void handleDefault(String input) {
+    /**
+     * 处理未登录状态下的命令
+     *
+     * @param input 用户输入
+     */
+    static void handleEntry(String input) {
         if (input.equals("0")) {
             running = false;
             return;
@@ -78,7 +82,10 @@ public class Main {
         }
     }
 
-    public static void handleLogging() {
+    /**
+     * 处理登录操作
+     */
+    static void handleLogging() {
 
         System.out.println("您正在进行登录操作。");
         User user = reading("用户名: ", input -> {
@@ -144,7 +151,10 @@ public class Main {
 
     }
 
-    public static void handleRegistering() {
+    /**
+     * 处理注册操作
+     */
+    static void handleRegistering() {
         System.out.println("您正在进行注册操作。");
 
         String username = reading("用户名: ", input -> {
@@ -197,7 +207,12 @@ public class Main {
         System.out.println("注册成功！欢迎 " + username + "！请再次登录以继续。");
     }
 
-    public static void handleLoggedIn(String input) {
+    /**
+     * 处理登录状态下的命令
+     *
+     * @param input 用户输入
+     */
+    static void handleLoggedIn(String input) {
         if (input.equals("0")) {
             loggedUser = null;
             System.out.println("您已成功登出。");
@@ -205,7 +220,6 @@ public class Main {
         }
 
         switch (input.toLowerCase()) {
-
             case "1" -> {
                 System.out.println("学号 \t姓名 \t年龄 \t地址 \t");
                 for (Student student : studentManager.list()) {
@@ -239,7 +253,7 @@ public class Main {
                 }
             }
             case "3" -> {
-                String id = reading("学号: ", inputId -> {
+                String id = reading("- 学号: ", inputId -> {
                     if (inputId.isEmpty()) {
                         System.out.println("学号不能为空，请重新输入。");
                         return null;
@@ -251,7 +265,7 @@ public class Main {
                     return inputId;
                 });
 
-                String name = reading("姓名: ", inputName -> {
+                String name = reading("- 姓名: ", inputName -> {
                     if (inputName.isEmpty()) {
                         System.out.println("姓名不能为空，请重新输入。");
                         return null;
@@ -259,7 +273,7 @@ public class Main {
                     return inputName;
                 });
 
-                int age = reading("年龄: ", inputAge -> {
+                int age = reading("- 年龄: ", inputAge -> {
                     try {
                         int a = Integer.parseInt(inputAge);
                         if (a <= 0) {
@@ -273,7 +287,7 @@ public class Main {
                     }
                 });
 
-                String address = reading("地址: ", inputAddress -> {
+                String address = reading("- 地址: ", inputAddress -> {
                     if (inputAddress.isEmpty()) {
                         System.out.println("地址不能为空，请重新输入。");
                         return null;
@@ -316,14 +330,14 @@ public class Main {
                     return;
                 }
 
-                String name = reading("姓名 (" + student.name() + "): ", inputName -> {
+                String name = reading("- 姓名 (" + student.name() + "): ", inputName -> {
                     if (inputName.isEmpty()) {
                         return student.name();
                     }
                     return inputName;
                 });
 
-                int age = reading("年龄 (" + student.age() + "): ", inputAge -> {
+                int age = reading("- 年龄 (" + student.age() + "): ", inputAge -> {
                     if (inputAge.isEmpty()) {
                         return student.age();
                     }
@@ -340,7 +354,7 @@ public class Main {
                     }
                 });
 
-                String address = reading("地址 (" + student.address() + "): ", inputAddress -> {
+                String address = reading("- 地址 (" + student.address() + "): ", inputAddress -> {
                     if (inputAddress.isEmpty()) {
                         return student.address();
                     }
