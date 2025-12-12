@@ -14,7 +14,7 @@ import javax.swing.*;
 
 public class Main {
 
-    static DataManager dataManager;
+    public static DataManager dataManager;
     public static StudentManager studentManager;
     public static UserManager userManager;
 

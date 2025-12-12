@@ -1,5 +1,6 @@
 package cc.carm.study.practicum.student.manager;
 
+import cc.carm.study.practicum.student.Main;
 import cc.carm.study.practicum.student.data.Student;
 import cc.carm.study.practicum.student.database.DataTables;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +28,28 @@ public class StudentManager {
             }
             return studentList;
         }, new ArrayList<>(), null);
+    }
+
+    @UnmodifiableView
+    public @NotNull List<Student> list(int skip, int size) {
+        return DataTables.STUDENTS.createQuery()
+                .setPageLimit(skip, size).build()
+                .execute(query -> {
+                    List<Student> studentList = new ArrayList<>();
+                    ResultSet rs = query.getResultSet();
+                    while (rs.next()) {
+                        String id = rs.getString("id");
+                        String name = rs.getString("name");
+                        int age = rs.getInt("age");
+                        String address = rs.getString("address");
+                        Student student = new Student(id, name, age, address);
+                        studentList.add(student);
+                    }
+                    return studentList;
+                }, new ArrayList<>(), null);
 
     }
+
 
     public void update(@NotNull Student student) {
         DataTables.STUDENTS.createReplace()
@@ -82,5 +103,16 @@ public class StudentManager {
                 }, new ArrayList<>(), null);
     }
 
-}
+    public int count() {
+        return Main.dataManager.sql().createQuery().withPreparedSQL(
+                "SELECT COUNT(*) as student_count FROM `" + DataTables.STUDENTS.getTableName() + "`"
+        ).execute(query -> {
+                    if (query.getResultSet().next()) {
+                        return query.getResultSet().getInt("student_count");
+                    }
+                    return 0;
+                }, 0, null
+        );
+    }
 
+}

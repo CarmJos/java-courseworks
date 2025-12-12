@@ -7,6 +7,7 @@ public class CIDTest {
     public void test() {
         System.out.println("CHECK: " + Validators.validateID("11010519491231002X"));
         System.out.println("CHECK: " + Validators.validateID("11010519491231502X"));
+
     }
 
 }

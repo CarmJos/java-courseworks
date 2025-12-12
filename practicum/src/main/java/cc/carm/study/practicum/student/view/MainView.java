@@ -12,11 +12,11 @@ public class MainView extends JFrame {
 
     private JTable studentTable;
     private DefaultTableModel tableModel;
-    private JButton addButton;
-    private JButton editButton;
-    private JButton deleteButton;
-    private JButton fuzzySearchButton;
-    private JButton idSearchButton;
+    private JButton prevPageButton;
+    private JButton nextPageButton;
+    private JLabel pageInfoLabel;
+    private int currentPage = 0;
+    private static final int PAGE_SIZE = 20;
 
     public MainView() {
         setTitle("学生信息管理系统");
@@ -31,7 +31,10 @@ public class MainView extends JFrame {
     private void initComponents() {
         // Menu Bar
         JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("设定");
+        JMenu fileMenu = new JMenu("文件");
+        JMenuItem exportCsvItem = new JMenuItem("导出 CSV");
+        exportCsvItem.addActionListener(e -> exportToCsv());
+        fileMenu.add(exportCsvItem);
         JMenuItem logoutItem = new JMenuItem("登出");
         logoutItem.addActionListener(e -> {
             dispose();
@@ -53,22 +56,32 @@ public class MainView extends JFrame {
 
         // Button Panel
         JPanel actionButtonPanel = new JPanel();
-        addButton = new JButton("添加");
-        editButton = new JButton("修改");
-        deleteButton = new JButton("删除");
+        JButton addButton = new JButton("添加");
+        JButton editButton = new JButton("修改");
+        JButton deleteButton = new JButton("删除");
         actionButtonPanel.add(addButton);
         actionButtonPanel.add(editButton);
         actionButtonPanel.add(deleteButton);
 
         JPanel searchButtonPanel = new JPanel();
-        fuzzySearchButton = new JButton("模糊查询");
-        idSearchButton = new JButton("学号查询");
+        JButton fuzzySearchButton = new JButton("模糊查询");
+        JButton idSearchButton = new JButton("学号查询");
         searchButtonPanel.add(fuzzySearchButton);
         searchButtonPanel.add(idSearchButton);
 
         JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(actionButtonPanel, BorderLayout.WEST);
         southPanel.add(searchButtonPanel, BorderLayout.EAST);
+
+        JPanel navigationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        prevPageButton = new JButton("上一页");
+        nextPageButton = new JButton("下一页");
+        pageInfoLabel = new JLabel();
+        navigationPanel.add(prevPageButton);
+        navigationPanel.add(pageInfoLabel);
+        navigationPanel.add(nextPageButton);
+
+        southPanel.add(navigationPanel, BorderLayout.CENTER);
 
         add(southPanel, BorderLayout.SOUTH);
 
@@ -78,13 +91,72 @@ public class MainView extends JFrame {
         deleteButton.addActionListener(e -> deleteStudent());
         fuzzySearchButton.addActionListener(e -> fuzzySearchStudent());
         idSearchButton.addActionListener(e -> idSearchStudent());
+        prevPageButton.addActionListener(e -> prevPage());
+        nextPageButton.addActionListener(e -> nextPage());
     }
 
     private void loadStudentData() {
         tableModel.setRowCount(0); // Clear existing data
-        List<Student> students = Main.studentManager.list();
+        int totalStudents = Main.studentManager.count();
+        int totalPages = (int) Math.ceil((double) totalStudents / PAGE_SIZE);
+
+        List<Student> students = Main.studentManager.list(currentPage * PAGE_SIZE, PAGE_SIZE);
         for (Student student : students) {
             tableModel.addRow(new Object[]{student.id(), student.name(), student.age(), student.address()});
+        }
+
+        pageInfoLabel.setText("第 " + (currentPage + 1) + " / " + totalPages + " 页 (共 " + totalStudents + " 条记录)");
+        prevPageButton.setEnabled(currentPage > 0);
+        nextPageButton.setEnabled(currentPage < totalPages - 1);
+    }
+
+    private void prevPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            loadStudentData();
+        }
+    }
+
+    private void nextPage() {
+        int totalStudents = Main.studentManager.count();
+        int totalPages = (int) Math.ceil((double) totalStudents / PAGE_SIZE);
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            loadStudentData();
+        }
+    }
+
+    private void exportToCsv() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("导出为 CSV");
+        fileChooser.setSelectedFile(new java.io.File("students.csv"));
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            try (java.io.FileWriter writer = new java.io.FileWriter(fileToSave)) {
+                // Write header
+                for (int i = 0; i < tableModel.getColumnCount(); i++) {
+                    writer.append(tableModel.getColumnName(i));
+                    if (i < tableModel.getColumnCount() - 1) {
+                        writer.append(',');
+                    }
+                }
+                writer.append('\n');
+
+                // Write data
+                List<Student> allStudents = Main.studentManager.list();
+                for (Student student : allStudents) {
+                    writer.append(student.id()).append(',');
+                    writer.append(student.name()).append(',');
+                    writer.append(String.valueOf(student.age())).append(',');
+                    writer.append(student.address()).append('\n');
+                }
+
+                JOptionPane.showMessageDialog(this, "成功导出到 " + fileToSave.getAbsolutePath(), "导出成功", JOptionPane.INFORMATION_MESSAGE);
+            } catch (java.io.IOException e) {
+                JOptionPane.showMessageDialog(this, "导出失败: " + e.getMessage(), "导出错误", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
