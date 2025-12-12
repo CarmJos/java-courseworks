@@ -1,9 +1,9 @@
 package cc.carm.study.practicum.student;
 
+import cc.carm.study.practicum.student.controller.StudentController;
+import cc.carm.study.practicum.student.controller.UserController;
 import cc.carm.study.practicum.student.data.User;
-import cc.carm.study.practicum.student.database.DataManager;
-import cc.carm.study.practicum.student.manager.StudentManager;
-import cc.carm.study.practicum.student.manager.UserManager;
+import cc.carm.study.practicum.student.database.Database;
 import cc.carm.study.practicum.student.view.LoginView;
 import cc.carm.study.practicum.student.view.MainView;
 import cc.carm.study.practicum.student.view.RegisterDialog;
@@ -14,9 +14,9 @@ import javax.swing.*;
 
 public class Main {
 
-    public static DataManager dataManager;
-    public static StudentManager studentManager;
-    public static UserManager userManager;
+    public static Database database;
+    public static StudentController studentController;
+    public static UserController userController;
 
     static @Nullable User loggedUser;
 
@@ -24,14 +24,14 @@ public class Main {
         System.out.println("学生信息管理系统启动中...");
 
         System.out.println("正在链接数据库...");
-        dataManager = new DataManager();
-        if (!dataManager.initialize()) {
+        database = new Database();
+        if (!database.initialize()) {
             System.out.println("数据库链接失败，系统无法启动。");
             return;
         }
 
-        studentManager = new StudentManager();
-        userManager = new UserManager();
+        studentController = new StudentController();
+        userController = new UserController();
 
         // 欢迎消息
         System.out.println("欢迎使用学生信息管理系统！");
@@ -58,7 +58,7 @@ public class Main {
                     return;
                 }
 
-                User user = userManager.get(username);
+                User user = userController.get(username);
                 if (user == null || !user.validatePassword(password)) {
                     JOptionPane.showMessageDialog(loginView, "用户名或密码错误！", "登录失败", JOptionPane.ERROR_MESSAGE);
                     loginView.refreshVerifyCode();

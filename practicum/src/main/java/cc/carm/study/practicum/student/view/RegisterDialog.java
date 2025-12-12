@@ -77,7 +77,7 @@ public class RegisterDialog extends JDialog {
             return;
         }
 
-        if (Main.userManager.get(username) != null) {
+        if (Main.userController.get(username) != null) {
             JOptionPane.showMessageDialog(this, "用户名已存在！", "错误", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -98,7 +98,7 @@ public class RegisterDialog extends JDialog {
         }
 
         User newUser = new User(username, BCrypt.hashPassword(password), cid, phone);
-        if (Main.userManager.register(newUser)) {
+        if (Main.userController.register(newUser)) {
             registered = true;
             dispose();
         } else {

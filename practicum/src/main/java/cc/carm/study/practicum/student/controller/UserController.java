@@ -1,4 +1,4 @@
-package cc.carm.study.practicum.student.manager;
+package cc.carm.study.practicum.student.controller;
 
 import cc.carm.study.practicum.student.data.User;
 import cc.carm.study.practicum.student.database.DataTables;
@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserManager {
+public class UserController {
 
     public @NotNull @UnmodifiableView Set<User> list() {
         return DataTables.USERS.createQuery().build().execute(query -> {

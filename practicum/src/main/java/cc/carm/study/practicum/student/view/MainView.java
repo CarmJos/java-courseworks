@@ -97,10 +97,10 @@ public class MainView extends JFrame {
 
     private void loadStudentData() {
         tableModel.setRowCount(0); // Clear existing data
-        int totalStudents = Main.studentManager.count();
+        int totalStudents = Main.studentController.count();
         int totalPages = (int) Math.ceil((double) totalStudents / PAGE_SIZE);
 
-        List<Student> students = Main.studentManager.list(currentPage * PAGE_SIZE, PAGE_SIZE);
+        List<Student> students = Main.studentController.list(currentPage * PAGE_SIZE, PAGE_SIZE);
         for (Student student : students) {
             tableModel.addRow(new Object[]{student.id(), student.name(), student.age(), student.address()});
         }
@@ -118,7 +118,7 @@ public class MainView extends JFrame {
     }
 
     private void nextPage() {
-        int totalStudents = Main.studentManager.count();
+        int totalStudents = Main.studentController.count();
         int totalPages = (int) Math.ceil((double) totalStudents / PAGE_SIZE);
         if (currentPage < totalPages - 1) {
             currentPage++;
@@ -145,7 +145,7 @@ public class MainView extends JFrame {
                 writer.append('\n');
 
                 // Write data
-                List<Student> allStudents = Main.studentManager.list();
+                List<Student> allStudents = Main.studentController.list();
                 for (Student student : allStudents) {
                     writer.append(student.id()).append(',');
                     writer.append(student.name()).append(',');
@@ -167,7 +167,7 @@ public class MainView extends JFrame {
         if (newStudent != null) {
 
 
-            Main.studentManager.update(newStudent);
+            Main.studentController.update(newStudent);
             loadStudentData();
             JOptionPane.showMessageDialog(this, "学生添加成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -187,7 +187,7 @@ public class MainView extends JFrame {
 
             Student updatedStudent = dialog.getUpdatedStudent();
             if (updatedStudent != null) {
-                Main.studentManager.update(updatedStudent);
+                Main.studentController.update(updatedStudent);
                 loadStudentData();
                 JOptionPane.showMessageDialog(this, "学生信息修改成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
 
@@ -203,7 +203,7 @@ public class MainView extends JFrame {
             String studentId = (String) tableModel.getValueAt(selectedRow, 0);
             int confirm = JOptionPane.showConfirmDialog(this, "您确定要删除学号为 " + studentId + " 的学生吗？", "确认删除", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                Main.studentManager.remove(studentId);
+                Main.studentController.remove(studentId);
                 loadStudentData();
                 JOptionPane.showMessageDialog(this, "学生删除成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
 
@@ -216,7 +216,7 @@ public class MainView extends JFrame {
     private void fuzzySearchStudent() {
         String keyword = JOptionPane.showInputDialog(this, "请输入要搜索的关键字：", "模糊查询", JOptionPane.PLAIN_MESSAGE);
         if (keyword != null && !keyword.isEmpty()) {
-            List<Student> students = Main.studentManager.findByName(keyword);
+            List<Student> students = Main.studentController.findByName(keyword);
             if (students.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "未找到匹配的学生。", "查询结果", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -229,7 +229,7 @@ public class MainView extends JFrame {
     private void idSearchStudent() {
         String studentId = JOptionPane.showInputDialog(this, "请输入要查询的学生学号：", "学号查询", JOptionPane.PLAIN_MESSAGE);
         if (studentId != null && !studentId.isEmpty()) {
-            Student student = Main.studentManager.find(studentId);
+            Student student = Main.studentController.find(studentId);
             if (student != null) {
                 SearchResultDialog dialog = new SearchResultDialog(this, "学号查询结果", List.of(student));
                 dialog.setVisible(true);

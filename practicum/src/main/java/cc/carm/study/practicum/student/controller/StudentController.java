@@ -1,4 +1,4 @@
-package cc.carm.study.practicum.student.manager;
+package cc.carm.study.practicum.student.controller;
 
 import cc.carm.study.practicum.student.Main;
 import cc.carm.study.practicum.student.data.Student;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StudentManager {
+public class StudentController {
 
     @UnmodifiableView
     public @NotNull List<Student> list() {
@@ -104,7 +104,7 @@ public class StudentManager {
     }
 
     public int count() {
-        return Main.dataManager.sql().createQuery().withPreparedSQL(
+        return Main.database.sql().createQuery().withPreparedSQL(
                 "SELECT COUNT(*) as student_count FROM `" + DataTables.STUDENTS.getTableName() + "`"
         ).execute(query -> {
                     if (query.getResultSet().next()) {

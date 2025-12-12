@@ -7,11 +7,11 @@ import cc.carm.lib.easysql.beecp.BeeDataSourceConfig;
 import java.io.File;
 import java.sql.SQLException;
 
-public class DataManager {
+public class Database {
 
     private SQLManager sqlManager;
 
-    public DataManager() {
+    public Database() {
     }
 
     public boolean initialize() {
