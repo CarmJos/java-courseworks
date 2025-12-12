@@ -27,6 +27,11 @@
             <version>${deps.easysql.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.7</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>

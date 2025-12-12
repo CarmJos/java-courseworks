@@ -28,11 +28,12 @@ public class UserManager {
         }, new HashSet<>(), null);
     }
 
-    public void register(User user) {
+    public boolean register(User user) {
         DataTables.USERS.createInsert()
                 .setColumnNames("username", "hashed_password", "cid", "phone", "create_time")
                 .setParams(user.username(), user.hashedPassword(), user.cid(), user.phone(), new Date())
                 .execute(null);
+        return true;
     }
 
     public boolean unregister(User user) {

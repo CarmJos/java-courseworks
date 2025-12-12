@@ -30,7 +30,7 @@ public class StudentManager {
 
     }
 
-    public void add(@NotNull Student student) {
+    public void update(@NotNull Student student) {
         DataTables.STUDENTS.createReplace()
                 .setColumnNames("id", "name", "age", "address", "create_time")
                 .setParams(student.id(), student.name(), student.age(), student.address(), new Date())
