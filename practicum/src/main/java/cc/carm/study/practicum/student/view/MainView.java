@@ -16,12 +16,13 @@ public class MainView extends JFrame {
     private JButton nextPageButton;
     private JLabel pageInfoLabel;
     private int currentPage = 0;
-    private static final int PAGE_SIZE = 20;
+    private int pageSize = 20; // 可变的每页大小；当为 0 时表示全部
+    private JComboBox<String> pageSizeCombo;
 
     public MainView() {
         setTitle("学生信息管理系统");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1000, 600);
         setLocationRelativeTo(null);
 
         initComponents();
@@ -74,9 +75,31 @@ public class MainView extends JFrame {
         southPanel.add(searchButtonPanel, BorderLayout.EAST);
 
         JPanel navigationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // 每页大小选择
+        JLabel pageSizeLabel = new JLabel("每页:");
+        pageSizeCombo = new JComboBox<>(new String[]{"10", "20", "50", "100", "全部"});
+        pageSizeCombo.setSelectedItem(String.valueOf(pageSize));
+        pageSizeCombo.addActionListener(e -> {
+            String sel = (String) pageSizeCombo.getSelectedItem();
+            if ("全部".equals(sel)) {
+                pageSize = 0; // 0 表示全部
+            } else {
+                try {
+                    pageSize = Integer.parseInt(sel);
+                } catch (NumberFormatException ex) {
+                    pageSize = 20;
+                }
+            }
+            currentPage = 0;
+            loadStudentData();
+        });
+
         prevPageButton = new JButton("上一页");
         nextPageButton = new JButton("下一页");
         pageInfoLabel = new JLabel();
+        // add page size selector before paging controls
+        navigationPanel.add(pageSizeLabel);
+        navigationPanel.add(pageSizeCombo);
         navigationPanel.add(prevPageButton);
         navigationPanel.add(pageInfoLabel);
         navigationPanel.add(nextPageButton);
@@ -98,16 +121,24 @@ public class MainView extends JFrame {
     private void loadStudentData() {
         tableModel.setRowCount(0); // Clear existing data
         int totalStudents = Main.studentController.count();
-        int totalPages = (int) Math.ceil((double) totalStudents / PAGE_SIZE);
-
-        List<Student> students = Main.studentController.list(currentPage * PAGE_SIZE, PAGE_SIZE);
+        int totalPages;
+        List<Student> students;
+        if (pageSize == 0) { // 全部
+            students = Main.studentController.list();
+            totalPages = 1;
+            currentPage = 0;
+        } else {
+            totalPages = (int) Math.ceil((double) totalStudents / pageSize);
+            students = Main.studentController.list(currentPage * pageSize, pageSize);
+        }
         for (Student student : students) {
             tableModel.addRow(new Object[]{student.id(), student.name(), student.age(), student.address()});
         }
 
         pageInfoLabel.setText("第 " + (currentPage + 1) + " / " + totalPages + " 页 (共 " + totalStudents + " 条记录)");
-        prevPageButton.setEnabled(currentPage > 0);
-        nextPageButton.setEnabled(currentPage < totalPages - 1);
+        boolean pagingEnabled = (pageSize != 0 && totalPages > 1);
+        prevPageButton.setEnabled(pagingEnabled && currentPage > 0);
+        nextPageButton.setEnabled(pagingEnabled && currentPage < totalPages - 1);
     }
 
     private void prevPage() {
@@ -119,8 +150,8 @@ public class MainView extends JFrame {
 
     private void nextPage() {
         int totalStudents = Main.studentController.count();
-        int totalPages = (int) Math.ceil((double) totalStudents / PAGE_SIZE);
-        if (currentPage < totalPages - 1) {
+        int totalPages = pageSize == 0 ? 1 : (int) Math.ceil((double) totalStudents / pageSize);
+        if (pageSize != 0 && currentPage < totalPages - 1) {
             currentPage++;
             loadStudentData();
         }
