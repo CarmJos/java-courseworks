@@ -7,7 +7,7 @@ import cc.carm.study.practicum.student.database.Database;
 import cc.carm.study.practicum.student.view.LoginView;
 import cc.carm.study.practicum.student.view.MainView;
 import cc.carm.study.practicum.student.view.RegisterDialog;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -35,7 +35,7 @@ public class Main {
 
         // 欢迎消息
         System.out.println("欢迎使用学生信息管理系统！");
-        FlatLightLaf.setup();
+        FlatMacDarkLaf.setup();
 
         SwingUtilities.invokeLater(() -> {
             LoginView loginView = new LoginView();

@@ -3,8 +3,6 @@ package cc.carm.study.practicum.student.database;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.SQLTable;
 import cc.carm.lib.easysql.api.builder.TableCreateBuilder;
-import cc.carm.lib.easysql.api.enums.ForeignKeyRule;
-import cc.carm.lib.easysql.api.enums.IndexType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
