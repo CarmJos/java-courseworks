@@ -25,6 +25,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+
         System.out.println("学生信息管理系统启动中...");
 
         System.out.println("正在链接数据库...");
@@ -46,7 +47,7 @@ public class Main {
             if (loggedUser == null) {
                 System.out.println("请注册或登录以继续：（0=退出, 1=登陆, 2=注册）。");
             } else {
-                System.out.println("请输入命令：（0=登出, 1=列出学生, 2=查询学生, 3=添加学生, 4=删除学生, 5=修改学生）。");
+                System.out.println("请输入命令：（0=登出, 1=列出学生, 2=查询学生, 3=添加学生, 4=删除学生, 5=修改学生, 6=模糊查询学生）。");
             }
             System.out.print("> ");
 
@@ -368,6 +369,30 @@ public class Main {
                 Student updatedStudent = new Student(student.id(), name, age, address);
                 studentManager.add(updatedStudent);
                 System.out.println("学生信息修改成功！");
+            }
+            case "6" -> {
+                String keyword = reading("请输入要模糊查询的姓名关键词: ", inputName -> {
+                    if (inputName.isEmpty()) {
+                        System.out.println("关键词不能为空，请重新输入。");
+                        return null;
+                    }
+                    return inputName;
+                });
+
+                var matches = studentManager.findByName(keyword);
+                if (matches.isEmpty()) {
+                    System.out.println("未找到姓名包含 ‘" + keyword + "’ 的学生。");
+                } else {
+                    System.out.println("学号 \t姓名 \t年龄 \t地址 \t");
+                    for (Student student : matches) {
+                        System.out.printf("%s \t%s \t%d \t%s \t%n",
+                                student.id(),
+                                student.name(),
+                                student.age(),
+                                student.address()
+                        );
+                    }
+                }
             }
 
         }

@@ -65,4 +65,22 @@ public class StudentManager {
                 }, null, null);
     }
 
+    public List<Student> findByName(@NotNull String searchName) {
+        return DataTables.STUDENTS.createQuery()
+                .addCondition("name", "LIKE", "%" + searchName + "%")
+                .build().execute(query -> {
+                    List<Student> students = new ArrayList<>();
+                    ResultSet rs = query.getResultSet();
+                    while (rs.next()) {
+                        String dataID = rs.getString("id");
+                        String name = rs.getString("name");
+                        int age = rs.getInt("age");
+                        String address = rs.getString("address");
+                        students.add(new Student(dataID, name, age, address));
+                    }
+                    return students;
+                }, new ArrayList<>(), null);
+    }
+
 }
+
