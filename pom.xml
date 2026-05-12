@@ -19,6 +19,29 @@
     <description>用于学习、教育及适配相关教材的Java编程实例、学习笔记与作业内容。</description>
     <url>https://github.com/CarmJos/java-courseworks</url>
 
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/CarmJos/java-courseworks/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>CarmJos</id>
+            <name>Carm Jos</name>
+            <email>carm@carm.cc</email>
+            <url>https://work.carm.cc</url>
+            <roles>
+                <role>Main Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3.0</name>
+            <url>https://opensource.org/licenses/GPL-3.0</url>
+        </license>
+    </licenses>
 
     <dependencies>
 
